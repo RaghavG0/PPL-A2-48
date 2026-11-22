@@ -29,17 +29,26 @@
 (define (list-element? e)
   (or (null? e) (pair? e)))
 
-;; ---------- S2.b: insert-if-short (direct version) -------------------
-;; (insert-if-short x lst n): x is put at the front of every list (at every
-;; level) whose ORIGINAL length is less than n. Sublists are processed first;
-;; the length test uses lst itself, so insertions never affect it.
+;; ---------- S2.c: higher-order inserter -------------------------------
+;; (make-inserter x len-ok?) returns a function on lists that inserts x at
+;; the front of every list (at every level) whose ORIGINAL length satisfies
+;; len-ok?. Sublists are processed first, then the length test is applied
+;; to the original list, so earlier insertions never affect it.
+(define (make-inserter x len-ok?)
+  (letrec ((insert
+            (lambda (lst)
+              (let ((processed (my-map (lambda (e)
+                                         (if (list-element? e) (insert e) e))
+                                       lst)))
+                (if (len-ok? (my-length lst))
+                    (cons x processed)
+                    processed)))))
+    insert))
+
+;; ---------- S2.b (final form, via make-inserter) ---------------------
+;; Insert x before every list whose length is less than n.
 (define (insert-if-short x lst n)
-  (let ((processed (my-map (lambda (e)
-                             (if (list-element? e) (insert-if-short x e n) e))
-                           lst)))
-    (if (< (my-length lst) n)
-        (cons x processed)
-        processed)))
+  ((make-inserter x (lambda (len) (< len n))) lst))
 
 ;; ---------- S2.a: read x, lst, n and print the result ----------------
 (define (print-insert-result)
