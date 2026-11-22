@@ -50,3 +50,26 @@
   (newline)
   (display (postorder tree))
   (newline))
+
+;; ---------- S1.c: height and leaf count -------------------------------
+;; height('()) = 0; height(node) = 1 + max(height(left), height(right)).
+(define (height t)
+  (if (null? t)
+      0
+      (+ 1 (max (height (node-left t)) (height (node-right t))))))
+
+(define (leaf? t)
+  (and (pair? t) (null? (node-left t)) (null? (node-right t))))
+
+;; (leaf-count-acc t acc) = number of leaves in t, plus acc.
+(define (leaf-count-acc t acc)
+  (cond ((null? t) acc)
+        ((leaf? t) (+ acc 1))
+        (else (leaf-count-acc (node-right t)
+                              (leaf-count-acc (node-left t) acc)))))
+
+(define (leaf-count t) (leaf-count-acc t 0))
+
+(define (print-height-and-leaves tree)
+  (display (list (height tree) (leaf-count tree)))
+  (newline))
