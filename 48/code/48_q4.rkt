@@ -28,3 +28,15 @@
 ;; A list element is itself a list when it is '() or a pair.
 (define (list-element? e)
   (or (null? e) (pair? e)))
+
+;; ---------- S2.b: insert-if-short (direct version) -------------------
+;; (insert-if-short x lst n): x is put at the front of every list (at every
+;; level) whose ORIGINAL length is less than n. Sublists are processed first;
+;; the length test uses lst itself, so insertions never affect it.
+(define (insert-if-short x lst n)
+  (let ((processed (my-map (lambda (e)
+                             (if (list-element? e) (insert-if-short x e n) e))
+                           lst)))
+    (if (< (my-length lst) n)
+        (cons x processed)
+        processed)))
