@@ -40,3 +40,11 @@
     (if (< (my-length lst) n)
         (cons x processed)
         processed)))
+
+;; ---------- S2.a: read x, lst, n and print the result ----------------
+(define (print-insert-result)
+  (let* ((x (read))
+         (lst (read))
+         (n (read)))
+    (display (insert-if-short x lst n))
+    (newline)))
