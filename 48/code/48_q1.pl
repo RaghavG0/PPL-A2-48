@@ -54,3 +54,29 @@ clue(7, S) :-
 clue(8, S) :-
     member(p(_, research, Lang, data), S),
     Lang \== javascript.
+
+% ---------- Search space ---------------------------------------------
+% candidate(S): S is any assignment where each attribute is a
+% permutation of its four values (24^3 = 13824 candidates).
+candidate([p('Alex',  D1, L1, P1),
+           p('Ben',   D2, L2, P2),
+           p('Carla', D3, L3, P3),
+           p('Dana',  D4, L4, P4)]) :-
+    permutation([research, development, design, testing], [D1, D2, D3, D4]),
+    permutation([python, java, 'c++', javascript],       [L1, L2, L3, L4]),
+    permutation(['AI', web, embedded, data],             [P1, P2, P3, P4]).
+
+% satisfies(Active, S): every clue number in Active holds in S.
+satisfies(Active, S) :-
+    forall(member(N, Active), clue(N, S)).
+
+% solve(Active, S): S is a candidate satisfying exactly the clues in Active.
+solve(Active, S) :-
+    candidate(S),
+    satisfies(Active, S).
+
+% ---------- P1.a ------------------------------------------------------
+main :-
+    once(solve([1,2,3,4,5,6,7,8], S)),
+    forall(member(p(Name, D, L, P), S),
+           format("~w = [~w, ~w, ~w]~n", [Name, D, L, P])).
