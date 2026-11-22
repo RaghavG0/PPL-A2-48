@@ -51,3 +51,20 @@ expr(Nums, V, S, P) :-
     wrap_left(PL, P, SL, SL1),
     wrap_right(PR, P, SR, SR1),
     format(string(S), "~w~w~w", [SL1, Op, SR1]).
+
+% equation(List, Eq): Eq is "L=R" for some split of List where both
+% sides have the same value.
+equation(List, Eq) :-
+    split(List, Ls, Rs),
+    findall(V-S, expr(Ls, V, S, _), LeftEs),
+    findall(V-S, expr(Rs, V, S, _), RightEs),
+    member(VL-SL, LeftEs),
+    member(VR-SR, RightEs),
+    VL =:= VR,
+    format(string(Eq), "~w=~w", [SL, SR]).
+
+% ---------- P2.a ------------------------------------------------------
+% generate_equation(List, Eq): one valid equation; fails if none exists
+% (including lists of length 0 or 1, where split/3 has no answer).
+generate_equation(List, Eq) :-
+    once(equation(List, Eq)).
