@@ -22,3 +22,31 @@
 (define (print-inorder tree)
   (display (inorder tree))
   (newline))
+
+;; ---------- S1.b: preorder and postorder ------------------------------
+;; (preorder-acc t acc) = node, then left subtree, then right subtree, then acc.
+(define (preorder-acc t acc)
+  (if (null? t)
+      acc
+      (cons (node-value t)
+            (preorder-acc (node-left t)
+                          (preorder-acc (node-right t) acc)))))
+
+;; (postorder-acc t acc) = left subtree, then right subtree, then node, then acc.
+(define (postorder-acc t acc)
+  (if (null? t)
+      acc
+      (postorder-acc (node-left t)
+                     (postorder-acc (node-right t)
+                                    (cons (node-value t) acc)))))
+
+(define (preorder t) (preorder-acc t '()))
+(define (postorder t) (postorder-acc t '()))
+
+(define (print-all-traversals tree)
+  (display (inorder tree))
+  (newline)
+  (display (preorder tree))
+  (newline)
+  (display (postorder tree))
+  (newline))
