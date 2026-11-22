@@ -68,3 +68,14 @@ equation(List, Eq) :-
 % (including lists of length 0 or 1, where split/3 has no answer).
 generate_equation(List, Eq) :-
     once(equation(List, Eq)).
+
+% ---------- P2.b ------------------------------------------------------
+% all_equations(List, Es): every valid equation, sorted, no duplicates.
+all_equations(List, Es) :-
+    findall(Eq, equation(List, Eq), Raw),
+    sort(Raw, Es).
+
+% count_equations(List, N): N is the number of valid equations.
+count_equations(List, N) :-
+    all_equations(List, Es),
+    length(Es, N).
