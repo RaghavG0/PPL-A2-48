@@ -80,3 +80,8 @@ main :-
     once(solve([1,2,3,4,5,6,7,8], S)),
     forall(member(p(Name, D, L, P), S),
            format("~w = [~w, ~w, ~w]~n", [Name, D, L, P])).
+
+% ---------- P1.b ------------------------------------------------------
+% count_solutions(Active, N): N solutions satisfy the clues in Active.
+count_solutions(Active, N) :-
+    aggregate_all(count, solve(Active, _), N).
