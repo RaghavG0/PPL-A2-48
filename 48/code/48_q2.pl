@@ -29,3 +29,25 @@ wrap_left(CP, PP, S, S1) :-
 % its top operator binds the same or looser (operators are left-assoc).
 wrap_right(CP, PP, S, S1) :-
     (   CP =< PP -> format(string(S1), "(~w)", [S]) ; S1 = S ).
+
+% ---------- Expressions -----------------------------------------------
+% split(Nums, Left, Right): Nums = Left ++ Right, both non-empty.
+split(Nums, [X|Ls], [Y|Rs]) :-
+    append([X|Ls], [Y|Rs], Nums).
+
+% expr(Nums, Value, String, Prec): some expression tree over Nums (all
+% numbers, in order) has integer Value, canonical String and top-level
+% precedence Prec. Values are computed from the tree, never by parsing.
+expr([N], N, S, 3) :-
+    number_string(N, S).
+expr(Nums, V, S, P) :-
+    split(Nums, Ls, Rs),
+    findall(VL-SL-PL, expr(Ls, VL, SL, PL), LeftEs),
+    findall(VR-SR-PR, expr(Rs, VR, SR, PR), RightEs),
+    member(VL-SL-PL, LeftEs),
+    member(VR-SR-PR, RightEs),
+    op_prec(Op, P),
+    apply_op(Op, VL, VR, V),
+    wrap_left(PL, P, SL, SL1),
+    wrap_right(PR, P, SR, SR1),
+    format(string(S), "~w~w~w", [SL1, Op, SR1]).
