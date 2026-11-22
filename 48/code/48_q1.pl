@@ -85,3 +85,8 @@ main :-
 % count_solutions(Active, N): N solutions satisfy the clues in Active.
 count_solutions(Active, N) :-
     aggregate_all(count, solve(Active, _), N).
+
+% ---------- P1.c ------------------------------------------------------
+% CLUE 9: The friend who works in the testing department prefers the AI project.
+clue(9, S) :-
+    member(p(_, testing, _, 'AI'), S).
